@@ -1,0 +1,27 @@
+name: free5gc-webui-operator
+display-name: free5gc webui operator
+summary: Free5gc webui operator
+description: Free5gc webui operator
+
+containers:
+  free5gc-webui:
+    resource: free5gc-webui-image
+    mounts:
+      - storage: webui-volume
+        location: /free5gc/config/
+
+resources:
+  free5gc-webui-image:
+    type: oci-image
+    description: OCI image for free5gc-webui
+    upstream-source: ghcr.io/gruyaume/free5gc-webui:1.1.1
+
+storage:
+  webui-volume:
+    type: filesystem
+    minimum-size: 1M
+
+requires:
+  database:
+    interface: mongodb_client
+    limit: 1
