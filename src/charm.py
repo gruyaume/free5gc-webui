@@ -27,7 +27,9 @@ class Free5GcWebUIOperatorCharm(CharmBase):
         super().__init__(*args)
         self._container_name = self._service_name = "free5gc-webui"
         self._container = self.unit.get_container(self._container_name)
-        self.framework.observe(self.on.free5gc_webui_pebble_ready, self._on_free5gc_webui_pebble_ready)
+        self.framework.observe(
+            self.on.free5gc_webui_pebble_ready, self._on_free5gc_webui_pebble_ready
+        )
         self.framework.observe(self.on.install, self._on_install)
         self._service_patcher = KubernetesServicePatch(
             charm=self,

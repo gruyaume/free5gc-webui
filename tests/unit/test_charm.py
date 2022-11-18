@@ -15,7 +15,7 @@ testing.SIMULATE_CAN_CONNECT = True
 class TestCharm(unittest.TestCase):
     @patch(
         "charm.KubernetesServicePatch",
-        lambda charm, ports: None,
+        lambda charm, ports, service_type: None,
     )
     def setUp(self):
         self.harness = testing.Harness(Free5GcWebUIOperatorCharm)
@@ -32,7 +32,7 @@ class TestCharm(unittest.TestCase):
 
         patch_push.assert_called_with(
             path="/free5gc/config/webuicfg.yaml",
-            source="info:\n  version: 1.0.1\n  description: PCF initial local configuration\n\nconfiguration:\n  serviceList:\n    - serviceName: nwebui-am-policy-control\n    - serviceName: nwebui-smpolicycontrol\n      suppFeat: 3fff\n    - serviceName: nwebui-bdtpolicycontrol\n    - serviceName: nwebui-policyauthorization\n      suppFeat: 3\n    - serviceName: nwebui-eventexposure\n    - serviceName: nwebui-ue-policy-control\n\n  sbi:\n    scheme: http\n    registerIPv4: webui-nwebui # IP used to register to NRF\n    bindingIPv4: 0.0.0.0  # IP used to bind the service\n    port: 80\n    tls:\n      key: config/TLS/webui.key\n      pem: config/TLS/webui.pem\n\n  mongodb:       # the mongodb connected by this PCF\n    name: free5gc                  # name of the mongodb\n    url: mongodb://mongodb:27017 # a valid URL of the mongodb\n\n  nrfUri: http://nrf-nnrf:8000\n  webuiName: PCF\n  timeFormat: 2019-01-02 15:04:05\n  defaultBdtRefId: BdtPolicyId-\n  locality: area1\n\nlogger:\n  PCF:\n    ReportCaller: false\n    debugLevel: info",  # noqa: E501
+            source="info:\n  version: 1.0.0\n  description: WEBUI initial local configuration\n\nconfiguration:\n  mongodb:\n    name: free5gc\n    url: mongodb://mongodb:27017\n\nlogger:\n  WEBUI:\n    ReportCaller: false\n    debugLevel: info",  # noqa: E501
         )
 
     @patch("ops.model.Container.exists")
@@ -45,7 +45,7 @@ class TestCharm(unittest.TestCase):
             "services": {
                 "free5gc-webui": {
                     "override": "replace",
-                    "command": "webui -c /free5gc/config/webuicfg.yaml",
+                    "command": "/free5gc/webconsole/webconsole -c /free5gc/config/webuicfg.yaml",
                     "startup": "enabled",
                     "environment": {"GIN_MODE": "release"},
                 }
